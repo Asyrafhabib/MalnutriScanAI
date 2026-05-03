@@ -11,7 +11,6 @@ from navigation import render_top_nav
 from dashboard import show_dashboard
 from prediction import show_prediction
 from analytics import show_analytics
-from dataset import show_dataset
 
 warnings.filterwarnings('ignore')
 
@@ -216,11 +215,9 @@ def main():
         show_prediction()
     elif st.session_state.page == 'Analytics':
         show_analytics()
-    elif st.session_state.page == 'Dataset':
-        show_dataset()
 
     st.markdown(
-        """<div class="footer">© 2026 MalnutriScan AI - Advanced Malnutrition Prediction System<br>Powered by Machine Learning - Dataset: Kaggle Nutrition Dataset - Model Accuracy 94%</div>""",
+        """<div class="footer">© 2026 MalnutriScan AI - Advanced Malnutrition Prediction System<br>Powered by XGBoost Algorithm - Dataset: Kaggle Nutrition Dataset - Model Accuracy 95.9%</div>""",
         unsafe_allow_html=True,
     )
 

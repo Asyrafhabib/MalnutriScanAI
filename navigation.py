@@ -1,4 +1,5 @@
 import streamlit as st
+from utils import load_svg # <-- 1. Tambahkan import ini di atas
 
 def render_top_nav():
     st.markdown(f"""
@@ -10,20 +11,17 @@ def render_top_nav():
 
             /* 1. KOTAK PEMBEDA NAVBAR (JURUS PAKU PAYUNG / FIXED) */
             div[data-testid="stHorizontalBlock"]:has(.nav-identifier) {{
-                /* === BARIS AJAIB BARU (PASTI BERHASIL) === */
                 position: fixed !important;
-                top: 0 !important; /* Memaku tepat di plafon layar */
+                top: 0 !important; 
                 left: 0 !important;
                 right: 0 !important;
-                z-index: 999999 !important; /* Kasta tertinggi, tidak mungkin tertimpa */
-                /* ========================================= */
-
+                z-index: 999999 !important; 
 
                 align-items: center !important; 
                 background-color: #FFFFFF !important; 
                 border-bottom: 1px solid #E2E8F0 !important; 
                 box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important; 
-                margin: 0 !important; /* Reset margin karena sudah fixed */
+                margin: 0 !important; 
 
                 /* Lebar Navbar */
                 width: 100vw !important; max-width: 100vw !important;
@@ -43,7 +41,7 @@ def render_top_nav():
                 
             /* 3. TOMBOL NAVBAR (DIBUAT LEBIH KECIL & SPESIFIK) */
             div[data-testid="stHorizontalBlock"]:has(.nav-identifier) div[data-testid="column"] div.stButton > button {{
-                height: 34px !important; /* Ukuran lebih ramping */
+                height: 34px !important; 
                 border-radius: 8px !important;
                 font-size: 13px !important;
                 padding: 0 12px !important;
@@ -101,10 +99,18 @@ def render_top_nav():
         </style>
     """, unsafe_allow_html=True)
 
-    col1, col2, col3, col4, col5 = st.columns([3, 1, 1, 1, 1])
+    col1, col2, col3, col4 = st.columns([3, 1, 1, 1])
 
     with col1:
-        st.markdown('<span class="nav-identifier" style="display:none;"></span><div class="nav-logo-container"><div class="nav-logo-box"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg></div><div><div class="nav-brand">MalnutriScan AI</div><div class="nav-brand-sub">Advanced XGBoost Prediction System</div></div></div>', unsafe_allow_html=True)
+        # 2. Panggil SVG milikmu (GANTI "nama_ikon_kamu.svg" dengan nama file aslimu)
+        custom_logo = load_svg("activity.svg") 
+        
+        # Jika file gagal dimuat, gunakan ikon cadangan
+        if not custom_logo:
+            custom_logo = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>'
+
+        # 3. Suntikkan variabel {custom_logo} ke dalam div .nav-logo-box menggunakan f-string
+        st.markdown(f'<span class="nav-identifier" style="display:none;"></span><div class="nav-logo-container"><div class="nav-logo-box">{custom_logo}</div><div><div class="nav-brand">MalnutriScan AI</div><div class="nav-brand-sub">Advanced XGBoost Prediction System</div></div></div>', unsafe_allow_html=True)
     
     with col2:
         if st.button("Dashboard", icon=":material/dashboard:", use_container_width=True, type="primary" if st.session_state.page == 'Dashboard' else "secondary"):
@@ -119,9 +125,4 @@ def render_top_nav():
     with col4:
         if st.button("Analytics", icon=":material/bar_chart:", use_container_width=True, type="primary" if st.session_state.page == 'Analytics' else "secondary"):
             st.session_state.page = 'Analytics'
-            st.rerun()
-            
-    with col5:
-        if st.button("Dataset", icon=":material/database:", use_container_width=True, type="primary" if st.session_state.page == 'Dataset' else "secondary"):
-            st.session_state.page = 'Dataset'
             st.rerun()

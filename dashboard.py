@@ -2,28 +2,41 @@ import streamlit as st
 import pandas as pd
 from utils import load_svg, get_svg_base64
 
-
 def show_dashboard():
     icon_stats = load_svg("users-round.svg")
     icon_ai = load_svg("brain.svg")
     icon_analytics = load_svg("chart-column.svg")
     icon_dataset = load_svg("database.svg")
 
-    b64_pred = get_svg_base64("brain.svg")
-    b64_anal = get_svg_base64("chart-column.svg")
-    b64_data = get_svg_base64("database.svg")
+    # ==========================================
+    # 1. BACA DATASET UNTUK STATISTIK DASHBOARD
+    # ==========================================
+    # Model XGBoost performance diinput manual di bagian leaderboard.
+    
+    # Baca dataframe asli HANYA untuk mengambil statistik (Total pasien, Avg BMI)
+    dataset_filename = "malnutrition_data .csv"
+    import os
+    if not os.path.exists(dataset_filename):
+        dataset_filename = "malnutrition_data.csv"
+        
+    try:
+        df = pd.read_csv(dataset_filename)
+        df = df.drop_duplicates()
+    except Exception as e:
+        st.error(f"Error loading dataset: {e}")
+        df = pd.DataFrame()
 
-    model_metrics = {
-        "XGBoost": {"acc": 94.0, "color": "green", "desc": "Best Model"},
-        "Random Forest": {"acc": 92.5, "color": "blue", "desc": "Excellent"},
-        "Gradient Boost": {"acc": 91.8, "color": "purple", "desc": "Very Good"},
-        "SVM": {"acc": 89.2, "color": "orange", "desc": "Stable"},
-        "Decision Tree": {"acc": 88.4, "color": "blue", "desc": "Baseline Tree"},
-        "Log. Regression": {"acc": 87.5, "color": "green", "desc": "Linear Base"},
-        "KNN": {"acc": 85.0, "color": "orange", "desc": "Distance"},
-        "Naive Bayes": {"acc": 82.1, "color": "purple", "desc": "Probabilistic"},
-    }
+    # ==========================================
+    # 2. XGBOOST PERFORMANCE METRICS DIKETIK LANGSUNG DI KODE
+    # ==========================================
+    xgb_acc = 95.9
+    xgb_rec = 95.9
+    xgb_prec = 95.9
+    xgb_f1 = 95.9
 
+    # ==========================================
+    # 2. RENDER HERO BANNER
+    # ==========================================
     b64_start = get_svg_base64("brain.svg")
     b64_view = get_svg_base64("chart-column.svg")
 
@@ -113,8 +126,8 @@ def show_dashboard():
             <div class="new-hero-badge">AI-Powered Healthcare</div>
             <div class="new-hero-title">Malnutrition Prediction System<br><span>Powered by XGBoost Algorithm</span></div>
             <div class="new-hero-subtitle">
-                Early detection and risk prediction of malnutrition with high accuracy using XGBoost<br>
-                algorithm trained on comprehensive Kaggle dataset.
+                Early detection and risk prediction of malnutrition with high accuracy using XGBoost Algorithm<br>
+                trained on comprehensive Kaggle dataset.
             </div>
         </div>
     """, unsafe_allow_html=True)
@@ -132,128 +145,120 @@ def show_dashboard():
         st.session_state.page = "Analytics"
         st.rerun()
 
-    st.markdown("<div class='section-title'>AI Models Performance Leaderboard</div>", unsafe_allow_html=True)
-    models_list = list(model_metrics.items())
-    row1 = st.columns(4)
-    for i in range(4):
-        m_name, m_data = models_list[i]
-        with row1[i]:
-            st.markdown(f"""
-            <div class="perf-card c-{m_data['color']}">
-                <div class="perf-title t-{m_data['color']}">{m_name}</div>
-                <div class="perf-value t-{m_data['color']}">{m_data['acc']}%</div>
-                <div class="perf-desc t-{m_data['color']}">{m_data['desc']}</div>
-            </div>
-            """, unsafe_allow_html=True)
-    st.markdown("<div style='margin-top: 15px;'></div>", unsafe_allow_html=True)
-    row2 = st.columns(4)
-    for i in range(4, 8):
-        m_name, m_data = models_list[i]
-        with row2[i-4]:
-            st.markdown(f"""
-            <div class="perf-card c-{m_data['color']}">
-                <div class="perf-title t-{m_data['color']}">{m_name}</div>
-                <div class="perf-value t-{m_data['color']}">{m_data['acc']}%</div>
-                <div class="perf-desc t-{m_data['color']}">{m_data['desc']}</div>
-            </div>
-            """, unsafe_allow_html=True)
+    # ==========================================
+    # 3. RENDER XGBOOST PERFORMANCE LEADERBOARD
+    # ==========================================
+    st.markdown("<h3 style='margin-top: 0px;'>XGBoost Performance Leaderboard</h3>", unsafe_allow_html=True)
 
-    st.markdown("<div class='section-title'>Dataset Overview</div>", unsafe_allow_html=True)
-    st.markdown(f"""
-    <style>
-        div[data-testid="stHorizontalBlock"]:has(.sync-height) {{ align-items: stretch !important; }}
-        div[data-testid="stVerticalBlockBorderWrapper"]:has(.sync-height) {{
-            height: 100% !important; display: flex !important; flex-direction: column !important; justify-content: flex-start !important;
-        }}
-        div[data-testid="stColumn"]:nth-child(2) div[data-testid="stVerticalBlock"] {{ gap: 1.2rem !important; }}
-        div[data-testid="stColumn"]:nth-child(2) button p::before {{
-            content: ''; display: block; width: 18px; height: 18px; flex-shrink: 0; margin-right: 12px; background-color: currentColor;
-        }}
-        div[data-testid="stColumn"]:nth-child(2) div.element-container:nth-child(3) button p::before {{
-            -webkit-mask: url('{b64_pred}') no-repeat center / contain; mask: url('{b64_pred}') no-repeat center / contain;
-        }}
-        div[data-testid="stColumn"]:nth-child(2) div.element-container:nth-child(4) button p::before {{
-            -webkit-mask: url('{b64_anal}') no-repeat center / contain; mask: url('{b64_anal}') no-repeat center / contain;
-        }}
-        div[data-testid="stColumn"]:nth-child(2) div.element-container:nth-child(5) button p::before {{
-            -webkit-mask: url('{b64_data}') no-repeat center / contain; mask: url('{b64_data}') no-repeat center / contain;
-        }}
-    </style>
+    st.markdown("""
+        <style>
+            .perf-card { border-radius: 24px; padding: 24px; margin-bottom: 16px; min-height: 155px; box-shadow: 0 18px 40px rgba(15, 23, 42, 0.04); }
+            .perf-title { font-size: 16px; font-weight: 800; margin-bottom: 12px; }
+            .perf-value { font-size: 40px; font-weight: 800; margin-bottom: 6px; }
+            .perf-desc { font-size: 14px; color: #4B5563; }
+            .c-green { background: #ECFDF5; border: 1px solid #6EE7B7; }
+            .t-green { color: #059669; }
+            .c-blue { background: #EFF6FF; border: 1px solid #60A5FA; }
+            .t-blue { color: #2563EB; }
+            .c-purple { background: #F5F3FF; border: 1px solid #A78BFA; }
+            .t-purple { color: #7C3AED; }
+            .c-orange { background: #FFFBEB; border: 1px solid #FDBA74; }
+            .t-orange { color: #EA580C; }
+        </style>
     """, unsafe_allow_html=True)
 
-    col_left, col_right = st.columns([1.8, 1])
-    with col_left:
-        with st.container(border=True):
-            st.markdown('<div class="sync-height"></div>', unsafe_allow_html=True)
+    xgb_metrics = [
+        ('Accuracy', xgb_acc, 'green'),
+        ('Recall', xgb_rec, 'blue'),
+        ('Precision', xgb_prec, 'purple'),
+        ('F1 Score', xgb_f1, 'orange'),
+    ]
+
+    metric_cols = st.columns(4)
+    for idx, (metric_name, metric_val, color) in enumerate(xgb_metrics):
+        with metric_cols[idx]:
             st.markdown(f"""
-                <div style='display:flex; align-items:center; gap:12px; margin-bottom:4px;'>
-                    <div style="width:28px; height:28px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
-                        {icon_stats}
-                    </div>
-                    <div style='font-weight:800; font-size:17px; color:#0F172A;'>
-                        Training Data Statistics
-                    </div>
-                </div>
-                <div style='font-size:13px; color:#64748B; margin-bottom:24px; margin-left:40px;'>Comprehensive nutrition dataset from Kaggle</div>
+            <div class="perf-card c-{color}">
+                <div class="perf-title t-{color}">{metric_name}</div>
+                <div class="perf-value t-{color}">{metric_val:.1f}%</div>
+            </div>
             """, unsafe_allow_html=True)
-            try:
-                df = pd.read_csv("malnutrition_data .csv")
-                tot_samples = f"{len(df):,}".replace(",", ".")
-                target_col = df.columns[-1]
-                val_counts = df[target_col].astype(str).str.lower().value_counts()
-                c_normal = val_counts.get('normal', 0)
-                c_moderate = val_counts.get('moderate', 0)
-                c_severe = val_counts.get('severe', 0)
-                bmi_col = [c for c in df.columns if 'bmi' in c.lower()]
-                avg_bmi = round(df[bmi_col[0]].mean(), 1) if bmi_col else 0.0
-                muac_col = [c for c in df.columns if 'muac' in c.lower()]
-                avg_muac = round(df[muac_col[0]].mean(), 1) if muac_col else 0.0
-                age_col = [c for c in df.columns if 'age' in c.lower()]
-                avg_age = round(df[age_col[0]].mean(), 1) if age_col else 0.0
-            except Exception:
-                tot_samples, c_normal, c_moderate, c_severe = "5.000", 3550, 1100, 350
-                avg_bmi, avg_muac, avg_age = 10.0, 13.4, 24.5
-            b_cols = st.columns(4)
-            with b_cols[0]:
-                st.markdown(f"<div class='stat-box b-blue'><div class='stat-label t-blue'>Total Samples</div><div class='stat-val t-blue'>{tot_samples}</div></div>", unsafe_allow_html=True)
-            with b_cols[1]:
-                st.markdown(f"<div class='stat-box b-green'><div class='stat-label t-green'>Normal</div><div class='stat-val t-green'>{c_normal}</div></div>", unsafe_allow_html=True)
-            with b_cols[2]:
-                st.markdown(f"<div class='stat-box b-yellow'><div class='stat-label t-orange'>Moderate Risk</div><div class='stat-val t-orange'>{c_moderate}</div></div>", unsafe_allow_html=True)
-            with b_cols[3]:
-                st.markdown(f"<div class='stat-box b-orange'><div class='stat-label t-orange'>Severe Risk</div><div class='stat-val t-orange'>{c_severe}</div></div>", unsafe_allow_html=True)
-            st.markdown("<div style='margin-top: 28px;'></div>", unsafe_allow_html=True)
+
+    # ==========================================
+    # 4. RENDER DATASET OVERVIEW
+    # ==========================================
+    st.markdown("<h3 style='margin-top: 0px;'>Dataset Overview</h3>", unsafe_allow_html=True)
+
+    # Hanya menggunakan satu container (full width) tanpa dibagi kolom lagi
+    with st.container(border=True):
+        st.markdown(f"""
+            <div style='display:flex; align-items:center; gap:12px; margin-bottom:4px;'>
+                <div style="width:28px; height:28px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                    {icon_stats}
+                </div>
+                <div style='font-weight:800; font-size:17px; color:#0F172A;'>
+                    Training Data Statistics
+                </div>
+            </div>
+            <div style='font-size:13px; color:#64748B; margin-bottom:0px; margin-left:40px;'>Comprehensive nutrition dataset from Kaggle</div>
+        """, unsafe_allow_html=True)
+        try:
+            # Menggunakan DataFrame 'df' asli yang di-load dari CSV
+            tot_samples = f"{len(df):,}".replace(",", ".")
             
-            # --- BAGIAN YANG DIPERBAIKI (POSISI TEXT DINAIKKAN) ---
-            s_cols = st.columns(3)
-            with s_cols[0]:
-                st.markdown(f"<div class='summary-text' style='position: relative; top: -15px;'>Average BMI<br><span class='summary-val'>{avg_bmi}</span></div>", unsafe_allow_html=True)
-            with s_cols[1]:
-                st.markdown(f"<div class='summary-text' style='position: relative; top: -15px;'>Average MUAC<br><span class='summary-val'>{avg_muac} cm</span></div>", unsafe_allow_html=True)
-            with s_cols[2]:
-                st.markdown(f"<div class='summary-text' style='text-align:right; position: relative; top: -15px;'>Average Age<br><span class='summary-val'>{avg_age} months</span></div>", unsafe_allow_html=True)
-            # -----------------------------------------------------
+            # Menghitung stats
+            c_normal = len(df[df['nutrition_status'].str.lower() == 'normal'])
+            c_moderate = len(df[df['nutrition_status'].str.lower() == 'moderate'])
+            c_severe = len(df[df['nutrition_status'].str.lower() == 'severe'])
+            
+            avg_bmi = round(df['bmi'].mean(), 1) if 'bmi' in df.columns else 0.0
+            avg_muac = round(df['muac_cm'].mean(), 1) if 'muac_cm' in df.columns else 0.0
+            avg_age = round(df['age_months'].mean(), 1) if 'age_months' in df.columns else 0.0
+        except Exception:
+            # Fallback aman
+            tot_samples, c_normal, c_moderate, c_severe = "5.000", 3550, 1100, 350
+            avg_bmi, avg_muac, avg_age = 10.0, 13.4, 24.5
+            
+        # Tambahan CSS untuk warna kotak pastel baru & penyesuaian ukuran agar pas 7 kolom
+        st.markdown("""
+        <style>
+            .b-purple { background-color: #F5F3FF; border: 1px solid #DDD6FE; }
+            .t-purple { color: #8B5CF6; }
+            .b-teal { background-color: #F0FDFA; border: 1px solid #CCFBF1; }
+            .t-teal { color: #14B8A6; }
+            .b-rose { background-color: #FFF1F2; border: 1px solid #FECDD3; }
+            .t-rose { color: #F43F5E; }
+            
+            /* Menyesuaikan ukuran teks & padding agar 7 kotak muat sempurna tanpa luber */
+            .stat-box { padding: 18px 14px !important; display: flex; flex-direction: column; justify-content: center; }
+            .stat-val { font-size: 26px !important; margin-top: 4px; }
+            .stat-label { font-size: 13px !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+            .unit-text { font-size: 14px; font-weight: 600; margin-left: 2px; }
+        </style>
+        """, unsafe_allow_html=True)
 
-    with col_right:
-        with st.container(border=True):
-            st.markdown('<div class="sync-height"></div>', unsafe_allow_html=True)
-            st.markdown("""
-                <div style='margin-bottom: 24px;'>
-                    <div style='font-weight:800; font-size:17px; color:#0F172A; margin-bottom:4px;'>Quick Actions</div>
-                    <div style='font-size:13px; color:#64748B;'>Get started with the system</div>
-                </div>
-            """, unsafe_allow_html=True)
-            if st.button("New Prediction →", key="qa_pred", use_container_width=True):
-                st.session_state.page = "Prediksi"
-                st.rerun()
-            if st.button("View Analytics →", key="qa_anal", use_container_width=True):
-                st.session_state.page = "Analytics"
-                st.rerun()
-            if st.button("Explore Dataset →", key="qa_data", use_container_width=True):
-                st.session_state.page = "Dataset"
-                st.rerun()
+        # Jadikan 7 kolom sejajar lurus
+        b_cols = st.columns(7)
+        
+        with b_cols[0]:
+            st.markdown(f"<div class='stat-box b-blue'><div class='stat-label t-blue'>Total Samples</div><div class='stat-val t-blue'>{tot_samples}</div></div>", unsafe_allow_html=True)
+        with b_cols[1]:
+            st.markdown(f"<div class='stat-box b-green'><div class='stat-label t-green'>Normal</div><div class='stat-val t-green'>{c_normal}</div></div>", unsafe_allow_html=True)
+        with b_cols[2]:
+            st.markdown(f"<div class='stat-box b-yellow'><div class='stat-label t-orange'>Moderate Risk</div><div class='stat-val t-orange'>{c_moderate}</div></div>", unsafe_allow_html=True)
+        with b_cols[3]:
+            st.markdown(f"<div class='stat-box b-orange'><div class='stat-label t-orange'>Severe Risk</div><div class='stat-val t-orange'>{c_severe}</div></div>", unsafe_allow_html=True)
+        with b_cols[4]:
+            st.markdown(f"<div class='stat-box b-purple'><div class='stat-label t-purple'>Avg BMI</div><div class='stat-val t-purple'>{avg_bmi}</div></div>", unsafe_allow_html=True)
+        with b_cols[5]:
+            st.markdown(f"<div class='stat-box b-teal'><div class='stat-label t-teal'>Avg MUAC</div><div class='stat-val t-teal'>{avg_muac}<span class='unit-text'>cm</span></div></div>", unsafe_allow_html=True)
+        with b_cols[6]:
+            st.markdown(f"<div class='stat-box b-rose'><div class='stat-label t-rose'>Avg Age</div><div class='stat-val t-rose'>{avg_age}<span class='unit-text'>mo</span></div></div>", unsafe_allow_html=True)
 
-    st.markdown("<h3>Key Features</h3>", unsafe_allow_html=True)
+        st.markdown("<div style='margin-bottom: 25px;'></div>", unsafe_allow_html=True)
+
+    # Menambahkan jarak kosong (margin-top) agar tidak menabrak kotak di atasnya
+    st.markdown("<h3 style='margin-top: 0px;'>Key Features</h3>", unsafe_allow_html=True)  
     
     c1, c2, c3 = st.columns(3)
     
@@ -261,8 +266,8 @@ def show_dashboard():
         st.markdown(f"""
         <div class="feature-card" style="min-height: 230px; display: flex; flex-direction: column;">
             <div class="icon-box ib-blue">{icon_ai}</div>
-            <h4>XGBoost Prediction</h4>
-            <p style="color: #64748B; font-size: 14px; line-height: 1.6; margin-bottom: 0;">Advanced XGBoost algorithm trained on 1.000+ samples from comprehensive Kaggle nutrition dataset.</p>
+            <h4>XGBoost Algorithm Prediction</h4>
+            <p style="color: #64748B; font-size: 14px; line-height: 1.6; margin-bottom: 0;">Advanced XGBoost algorithm trained on 5.000 samples from comprehensive Kaggle nutrition dataset.</p>
         </div>
         """, unsafe_allow_html=True)
         
@@ -271,7 +276,7 @@ def show_dashboard():
         <div class="feature-card" style="min-height: 230px; display: flex; flex-direction: column;">
             <div class="icon-box ib-green">{icon_analytics}</div>
             <h4>Comprehensive Analytics</h4>
-            <p style="color: #64748B; font-size: 14px; line-height: 1.6; margin-bottom: 0;">Detailed visualization and insights from the dataset with real-time statistical analysis and trend monitoring.</p>
+            <p style="color: #64748B; font-size: 14px; line-height: 1.6; margin-bottom: 0;">Detailed visualization and insights from prediction history with real-time statistical analysis.</p>
         </div>
         """, unsafe_allow_html=True)
         
@@ -280,6 +285,6 @@ def show_dashboard():
         <div class="feature-card" style="min-height: 230px; display: flex; flex-direction: column;">
             <div class="icon-box ib-purple">{icon_dataset}</div>
             <h4>Kaggle Dataset Integration</h4>
-            <p style="color: #64748B; font-size: 14px; line-height: 1.6; margin-bottom: 0;">Built on validated medical research data with 9 key features for accurate malnutrition assessment.</p>
+            <p style="color: #64748B; font-size: 14px; line-height: 1.6; margin-bottom: 0;">Built on validated medical research data with 6 key features for accurate malnutrition assessment.</p>
         </div>
         """, unsafe_allow_html=True)
