@@ -441,16 +441,20 @@ def show_prediction():
                 )
 
             rs = d['risk_score']
-            w_bmi, w_muac, w_age = 50, 40, 10
             
-            bmi_pts = rs * (w_bmi / 100.0)
+            # --- 1. UPDATE BOBOT BERDASARKAN HASIL MODEL (TOTAL 100%) ---
+            w_muac, w_age, w_bmi = 70, 20, 10
+            
+            # Kalkulasi poin berdasarkan bobot baru
             muac_pts = rs * (w_muac / 100.0)
             age_pts = rs * (w_age / 100.0)
+            bmi_pts = rs * (w_bmi / 100.0)
 
-            st.markdown(risk_row("BMI Score", f"Value: {d['bmi']:.2f}", w_bmi, bmi_pts), unsafe_allow_html=True)
+            # --- 2. RENDER URUTAN BARU: MUAC PALING ATAS, LALU AGE, TERAKHIR BMI ---
             st.markdown(risk_row("MUAC Score", f"Value: {d['muac']:.2f}", w_muac, muac_pts), unsafe_allow_html=True)
             st.markdown(risk_row("Age Factor", f"Value: {d.get('age_months', 24.0):.1f} months", w_age, age_pts), unsafe_allow_html=True)
-
+            st.markdown(risk_row("BMI Score", f"Value: {d['bmi']:.2f}", w_bmi, bmi_pts), unsafe_allow_html=True)
+            
         with st.container(border=True):
             st.markdown("#### Actionable Recommendations\n<p class='subtitle' style='margin-bottom:15px;'>Suggestions based on ML prediction and clinical expert system</p>", unsafe_allow_html=True)
             
