@@ -1,39 +1,96 @@
-# 👶 Malnutrition AI: Child Stunting Detection System
+👶 MalnutriScan AI
+Yapay Zeka Destekli Çocuk Malnütrisyon Risk Tahmin Sistemi
 
-![Python Version](https://img.shields.io/badge/Python-3.8%2B-blue?logo=python&logoColor=white)
-![Data Source](https://img.shields.io/badge/Dataset-Kaggle-20BEFF?logo=kaggle&logoColor=white)
-![Status](https://img.shields.io/badge/Status-Academic_Project-success)
-![License](https://img.shields.io/badge/License-MIT-green)
+MalnutriScan AI, çocuklarda malnütrisyon ve stunting riskini erken dönemde tespit etmek amacıyla geliştirilmiş yapay zeka destekli bir karar destek sistemidir.
 
-> Sebuah sistem kecerdasan buatan berbasis Python untuk menganalisis data numerik dan mendeteksi risiko *stunting* (tengkes) pada anak sejak dini, lengkap dengan visualisasi data, laporan statistik, dan rekomendasi nutrisi.
+Sistem; yaş, cinsiyet, kilo, boy, MUAC (Mid-Upper Arm Circumference), iştah skoru ve klinik değerlendirme verilerini kullanarak XGBoost algoritması ile risk tahmini gerçekleştirmektedir.
 
-## 📖 Latar Belakang
-Malnutrisi dan *stunting* merupakan tantangan kesehatan global yang membutuhkan penanganan cepat dan tepat. Proyek **Malnutrition AI** ini dikembangkan untuk mengotomatisasi proses identifikasi status gizi anak berdasarkan parameter numerik (umur, berat badan, tinggi badan, jenis kelamin). 
+Proje Özeti
 
-Sistem ini membandingkan kinerja beberapa algoritma *Machine Learning* untuk menemukan model prediksi terbaik, memberikan wawasan visual, serta menyajikan saran tindak lanjut sebagai alat bantu pengambilan keputusan awal.
+Bu proje kapsamında çocukların antropometrik ölçümleri analiz edilerek beslenme durumları değerlendirilmekte ve olası malnütrisyon riskleri belirlenmektedir.
 
-## ✨ Fitur Unggulan
-- 📊 **Analisis Gizi Otomatis:** Mengklasifikasikan status gizi anak berdasarkan standar kesehatan menggunakan model *Machine Learning* yang telah dioptimasi.
-- 📈 **Visualisasi Data komprehensif:** Menghasilkan grafik distribusi data (boxplot, bar chart) dan *confusion matrix* untuk evaluasi model.
-- 📋 **Laporan Statistik & Evaluasi:** Menyediakan metrik evaluasi yang detail (*Accuracy*, *F1-Score*, *Classification Report*).
-- 🍎 **Sistem Rekomendasi:** Memberikan panduan nutrisi dasar dan langkah intervensi berdasarkan hasil prediksi.
+Model, Kaggle veri seti üzerinde eğitilmiş ve optimize edilmiş XGBoost algoritmasını kullanmaktadır.
 
-## 📂 Sumber Data (Dataset)
-Model dalam proyek ini dilatih menggunakan dataset publik terverifikasi dari Kaggle:
-🔗 **[Children Malnutrition Dataset by Albert Kingstone](https://www.kaggle.com/datasets/albertkingstone/children-malnutrition-dataset)**
+Tahmin sonuçları modern bir web arayüzü üzerinden sunulmakta ve kullanıcıya detaylı analiz raporları sağlanmaktadır.
 
-## 🛠️ Teknologi & Library yang Digunakan
-Proyek ini dibangun menggunakan ekosistem Python dengan pustaka (*library*) utama sebagai berikut:
+Özellikler
+Dashboard
+Model performans göstergeleri
+Accuracy, Recall, Precision ve F1 Score sonuçları
+Veri seti istatistikleri
+Risk dağılım analizleri
+AI Prediction
+Yaş (Ay)
+Cinsiyet
+Kilo (kg)
+Boy (cm)
+MUAC ölçümü
+Kilo kaybı bilgisi
+İştah skoru
 
-* **Manipulasi & Analisis Data Numerik:**
-  * `pandas`: Antarmuka untuk impor, manipulasi, dan analisis data tabular.
-  * `numpy`: Antarmuka untuk operasi numerik dan perhitungan *array*.
-* **Machine Learning Pipeline (`scikit-learn`):**
-  * **Preprocessing:** `MinMaxScaler` (normalisasi data) & `LabelEncoder` (encoding label kategori).
-  * **Data Splitting & Tuning:** `train_test_split` & `GridSearchCV` (optimasi *hyperparameter*).
-  * **Algoritma Klasifikasi:** Menguji dan membandingkan `KNeighborsClassifier`, `SVC`, `DecisionTreeClassifier`, dan `RandomForestClassifier`.
-  * **Evaluasi Model:** Menggunakan `accuracy_score`, `f1_score`, `classification_report`, `confusion_matrix`, dan `ConfusionMatrixDisplay`.
-* **Visualisasi Data:**
-  * `matplotlib.pyplot`: Membuat grafik evaluasi, *boxplot*, dan *bar chart*.
-* **Deployment & Penyimpanan:**
-  * `joblib`: Digunakan untuk mengekspor dan menyimpan model terlatih agar siap digunakan pada tahap produksi (*deployment-ready*).
+girdileri kullanılarak malnütrisyon riski tahmini yapılmaktadır.
+
+Analytics Dashboard
+Tahmin geçmişi
+Risk dağılım grafikleri
+Yaş grubu analizleri
+Cinsiyet dağılımı
+BMI analizleri
+CSV dışa aktarma desteği
+Kullanılan Teknolojiler
+Frontend
+Streamlit
+Veri İşleme
+Pandas
+NumPy
+Makine Öğrenmesi
+XGBoost
+Scikit-Learn
+Veri Görselleştirme
+Plotly
+Matplotlib
+Model Kaydetme
+Joblib
+Veri Seti
+
+Children Malnutrition Dataset
+
+Kaynak:
+
+https://www.kaggle.com/datasets/albertkingstone/children-malnutrition-dataset
+
+Model Performansı
+Metrik	Sonuç
+Accuracy	95.9%
+Recall	95.9%
+Precision	95.9%
+F1 Score	95.9%
+
+Kurulum
+pip install -r requirements.txt
+
+Çalıştırma
+streamlit run app.py
+
+MacOS kullanıcıları için:
+
+brew install libomp
+
+Proje Yapısı
+MalnutriScanAI
+│
+├── app.py
+├── analytics.py
+├── dashboard.py
+├── prediction.py
+├── navigation.py
+├── yapayzeka.py
+│
+├── model/
+├── data/
+│
+├── requirements.txt
+└── README.md
+Geliştirici
+
+Bu proje akademik amaçlarla geliştirilmiştir.
